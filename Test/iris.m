@@ -141,13 +141,38 @@ title('outside iris suppressed');
 % Now that the dummy image has been properly segmentated, it needs to be
 %   stored into a matrix suitable for encoding. This step is important as
 %   there needs to be a constant size of the template in order to properly
-%   match. For this case we will be using a template of size ______.
+%   match. For this case we will be using a template of size 240x20.
 
+% Crop image to center the iris
 
-% Insert normalization.
+radius = ceil(radii_iris(1));
+xTop = x_pupil - radius;
+width = xTop + 2 * radius;
+yLeft = y_pupil - radius;
+height = yLeft + 2 * radius;
+dummy_image = imcrop(dummy_image, [yLeft, xTop, width, height]);
+
+% Normalize
+
+radial_res = 40; % M
+angular_res = 360; % N 
+
+rMax = 1;
+rMin = radii_pupil(1) / radii_iris(1);
+
+dummy_image = double(dummy_image)/255.0;
+dummy_image = ImToPolar(dummy_image, rMin, rMax, radial_res, angular_res);
+
+figure;
+imshow(dummy_image); title('Normalized iris');
+
 
 % apply Gabor filter
-[G,GABOUT]=gaborfilter(dummy_image,0.05,0.025,0,0);
+S = 0.4; % Variance
+F = 0.025; % Polar frequency
+W = 0; % 
+P = 0; % Phase
+[G,GABOUT]=gaborfilter(dummy_image,S,F,W,P);
 
 R=real(GABOUT); % REAL
 I=imag(GABOUT); % IMAGINARY
@@ -159,9 +184,10 @@ R = uint8(R>=0);
 I = uint8(I>=0);
 
 % Combine real and imaginary bits into one matrix with the structure:
+% Row-stack: 
 % R11, R12, R13...
 % I11, I12, I13...
-% R21, R22, R23... etc.
+% R21, R22, R23...  and similarly for column stack.
 [rows, cols] = size(R);
 rbarcode = zeros(rows*2, cols);
 cbarcode = zeros(rows, cols*2);
@@ -180,10 +206,7 @@ for c = 1:cols
 end
 
 figure;
-subplot(2,2,1); imshow(mat2gray(R)); title('Real part');
-subplot(2,2,2); imshow(mat2gray(I)); title('Imaginary part');
-subplot(2,2,3); imshow(mat2gray(rbarcode)); title('Row-stack "Barcode"');
-subplot(2,2,4); imshow(mat2gray(cbarcode)); title('Column-stack "Barcode"');
+imshow(mat2gray(rbarcode)); title(['Iris "Barcode" ' num2str(S)]);
 
 
 
