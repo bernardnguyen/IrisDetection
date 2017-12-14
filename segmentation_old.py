@@ -8,7 +8,7 @@ def rgb2gray(rgb):
     return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
 	
 def segmentiris(eyeimage):
-    ##imsize double 
+	##imsize double 
     lpupilradius = 28
     upupilradius = 40
     lirisradius = 80
@@ -19,9 +19,12 @@ def segmentiris(eyeimage):
     scaling = 0.4
 
     reflecthres = 240
-    
+
+    # Output message
+    print('    (1/2) Finding iris boundary...')
+	
     #find the iris boundary
-    row, col, r = findcircle(eyeimage, lirisradius, uirisradius, scaling, 2, 0.6, 0.59, 1.00, 1.00)
+    row, col, r = findcircle(eyeimage, lirisradius, uirisradius, scaling, 6, 0.6, 0.59, 1.00, 1.00)
     
     circleiris = [row, col, r]
     irl = row-r
@@ -48,8 +51,11 @@ def segmentiris(eyeimage):
     # detected iris boundary
     imagepupil = eyeimage [irl:iru,icl:icu]
 
+	# Output message
+    print('    (2/2) Finding pupil boundary...')
+
     #find pupil boundary
-    rowp, colp, r = findcircle(imagepupil, lpupilradius, upupilradius ,0.6,2,0.25,0.25,1.00,1.00)
+    rowp, colp, r = findcircle(imagepupil, lpupilradius, upupilradius ,0.6,6,0.25,0.25,1.00,1.00)
 
     row = irl + rowp
     col = icl + colp
@@ -69,22 +75,46 @@ def findcircle(image,lradius,uradius,scaling, sigma, hithres, lowthres, vert, ho
 	rd = np.around(uradius*scaling - lradius*scaling).astype(np.int32)
 
 	#generate the edge imag e
+
+	# Output message
+	print('        (1/5) Canny edge detection...')
+
 	I2, ori = canny(image, sigma, scaling, vert, horz)
-	I3 = adjgamma(I2, 1.9)
-	I4 = nonmaxsup(I3, ori, 1.5)
-	edgeimage = hysthresh(I4, hithres, lowthres)
 	
-	plt.subplot(231),plt.imshow(image),plt.title('grayscaled')
+	# Output message
+	print('        (2/5) Gamma adjustment...')
+	
+	I3 = adjgamma(I2, 1.9)
+	
+	# Output message
+	print('        (3/5) Non-max suppression...')
+	
+	I4 = nonmaxsup(I3, ori, 1.5)
+
+	# Output message
+	print('        (4/5) Hysteresis thresholding...')
+
+	edgeimage = hysthresh(I4, hithres, lowthres)
+
+	plt.figure(1)
+	plt.imshow(image),plt.title('grayscaled')
 	plt.xticks([]), plt.yticks([])	
-	plt.subplot(232),plt.imshow(I2),plt.title('gradient')
+	plt.figure(2)
+	plt.imshow(I2),plt.title('gradient')
 	plt.xticks([]), plt.yticks([])
-	plt.subplot(233), plt.imshow(I3), plt.title('gamma adjusted')
+	plt.figure(3)
+	plt.imshow(I3), plt.title('gamma adjusted')
 	plt.xticks([]), plt.yticks([])
-	plt.subplot(234), plt.imshow(I4), plt.title('non-max suppression')
+	plt.figure(4)
+	plt.imshow(I4), plt.title('non-max suppression')
 	plt.xticks([]), plt.yticks([])
-	plt.subplot(235), plt.imshow(edgeimage), plt.title('edge map')
+	plt.figure(5)
+	plt.imshow(edgeimage), plt.title('edge map')
 	plt.xticks([]), plt.yticks([])
 	plt.show()
+
+	# Output message
+	print('        (5/5) Hough circle transform...')
 
 	#perform the circular Hough transform
 	h = houghcircle(edgeimage, lradsc, uradsc)
@@ -118,6 +148,7 @@ def houghcircle(edgeim, rmin, rmax):
 
 	#%for each edge point, draw circles of different radii
 	for index in range(y.shape[0]):
+		print('        Edge point: ({}/{})'.format(index,y.shape[0]), end='\r')
 		cx = x[index]
 		cy = y[index]
 		for n in range(nradii):
@@ -276,7 +307,7 @@ def hysthresh(im, T1, T2):
 
 	O = [-1, 1, -rows-1, -rows, -rows+1, rows-1, rows, rows+1]
 
-	while stp != -1 :           # While the stack is not empty
+	while stp > 0 :           # While the stack is not empty
 	    v = stack[stp-1]         # Pop next index off the stack
 	    stp = stp - 1
 	    
@@ -354,11 +385,15 @@ def createiristemplate(eyeimage_filename):
 	mult=1 # not applicable if using nscales = 1
 	sigmaOnf=0.5
 	eyeimage = eyeimage_filename
-	def rgb2gray(rgb):
-		
-		return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
+
+	# Output message
+	print('(1/4) Grayscaling image...')
 
 	eyeimage = rgb2gray(np.array(Image.open(eyeimage)))
+
+	# Output message
+	print('(2/4) Segmenting iris...')
+
 	circleiris,circlepupil,imagewithnoise = segmentiris(eyeimage)
 	print('circleiris:',circleiris)
 	print('circlepupil:',circlepupil)
@@ -367,11 +402,17 @@ def createiristemplate(eyeimage_filename):
 	imagewithnoise2 = imagewithnoise.astype(np.int32)
 	imagewithcircles = eyeimage.astype(np.int32)
 	
+	# Output message
+	print('(3/4) Finding circle coordinates for iris...')
+
 	#get pixel coords for circle around iris
 	x,y = circlecoords([circleiris[0],circleiris[1]],circleiris[2],eyeimage.shape)
 	print('x:',x,'y:',y)
 	print('shape:',eyeimage.shape)
 	ind2 = x*eyeimage.shape[1]+y - 1
+
+	# Output message
+	print('(4/4) Finding circle coordinates for pupil...')
 
 	#get pixel coords for circle around pupil
 	xp,yp = circlecoords([circlepupil[0],circlepupil[1]],circlepupil[2],eyeimage.shape)
