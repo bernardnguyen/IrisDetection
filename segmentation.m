@@ -26,36 +26,36 @@ Rmax = 250;
 [centers_iris, radii_iris] = imfindcircles(smoothed_im,[Rmin Rmax],'ObjectPolarity','dark');
 
 % Display results in steps
-figure;
-subplot(2,3,1);
-imshow(image);
-title('original');
-subplot(2,3,2);
-imshow(gray);
-title('grayscaled');
-subplot(2,3,3);
-imshow(smoothed_im);
-title('Gaussian smoothed');
-subplot(2,3,4);
-imshow(smoothed_im);
-viscircles(centers_pupil(1,:), radii_pupil(1,:),'Color','b');
-title('finding pupil bounds');
-subplot(2,3,5);
-imshow(smoothed_im);
-viscircles(centers_pupil(1,:), radii_iris(1,:),'Color','b');
-title('finding iris bounds');
-subplot(2,3,6);
-imshow(image);
-viscircles(centers_pupil(1,:), radii_pupil(1,:),'Color','b');
-viscircles(centers_pupil(1,:), radii_iris(1,:),'Color','b');
-title('segmentated image');
+%figure;
+%subplot(2,3,1);
+%imshow(image);
+%title('original');
+%subplot(2,3,2);
+%imshow(gray);
+%title('grayscaled');
+%subplot(2,3,3);
+%imshow(smoothed_im);
+%title('Gaussian smoothed');
+%subplot(2,3,4);
+%imshow(smoothed_im);
+%viscircles(centers_pupil(1,:), radii_pupil(1,:),'Color','b');
+%title('finding pupil bounds');
+%subplot(2,3,5);
+%imshow(smoothed_im);
+%viscircles(centers_pupil(1,:), radii_iris(1,:),'Color','b');
+%title('finding iris bounds');
+%subplot(2,3,6);
+%imshow(image);
+%viscircles(centers_pupil(1,:), radii_pupil(1,:),'Color','b');
+%viscircles(centers_pupil(1,:), radii_iris(1,:),'Color','b');
+%title('segmentated image');
 
 dummy_image = gray;
 
-figure;
-subplot(2,2,1);
-imshow(dummy_image);
-title('original');
+%figure;
+%subplot(2,2,1);
+%imshow(dummy_image);
+%title('original');
 
 center_pupil = ceil(centers_pupil(1,:));
 x_pupil = center_pupil(2);
@@ -83,9 +83,9 @@ for i = 1:size(xcoords_iris,2)
     end
 end
 
-subplot(2,2,2);
-imshow(dummy_image);
-title('pixels adjusted');
+%subplot(2,2,2);
+%imshow(dummy_image);
+%title('pixels adjusted');
 
 % Now that the dummy image's pixel's have been altered, we need to move
 %   the iris spectrum pixels into a rectangular matrix. This will
@@ -99,9 +99,9 @@ for i = 1:size(dummy_image,1)
     end
 end
 
-subplot(2,2,3);
-imshow(dummy_image);
-title('inside pupil suppressed');
+%subplot(2,2,3);
+%imshow(dummy_image);
+%title('inside pupil suppressed');
 
 for i = 1:size(dummy_image,1)
     for j = 1:size(dummy_image,2)
@@ -111,6 +111,6 @@ for i = 1:size(dummy_image,1)
     end
 end
 
-subplot(2,2,4);
-imshow(dummy_image);
-title('outside iris suppressed');
+%subplot(2,2,4);
+%imshow(dummy_image);
+%title('outside iris suppressed');

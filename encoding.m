@@ -2,8 +2,8 @@
 
 function [barcode] = encoding(normalized_image)
 % apply Gabor filter
-S = 0.4; % Variance
-F = 0.025; % Polar frequency
+S = 0.15; % Variance
+F = 0.001; % Polar frequency
 W = 0; % 
 P = 0; % Phase
 [G,GABOUT]=gaborfilter(normalized_image,S,F,W,P);
@@ -14,8 +14,8 @@ M=abs(GABOUT); % MAGNITUDE
 P=angle(GABOUT); % PHASE
 
 % Set real and imaginary bits
-R = uint8(R>=0)*255; 
-I = uint8(I>=0)*255;
+R = uint8(R>=0)*1; 
+I = uint8(I>=0)*1;
 
 % Combine real and imaginary bits into one matrix with the structure:
 % Row-stack: 
@@ -37,7 +37,7 @@ end
 formatted = zeros(rows*3+2,cols+4);
 for r = 1:rows
     formatted(r*3-2:r*3-1,:) = 200;
-    formatted(r*3,3:cols+2) = barcode(r,:);
+    formatted(r*3,3:cols+2) = 255*barcode(r,:);
     
     r = r+2;
 end
@@ -45,6 +45,6 @@ formatted(rows*3+1:rows*3+2,:) = 200;
 formatted(:,1:2) = 200;
 formatted(:,cols+3:cols+4) = 200;
 
-figure; 
-subplot(211); imshow(mat2gray(barcode));
-subplot(212); imshow(mat2gray(formatted));
+%figure; 
+%subplot(211); imshow(mat2gray(barcode));
+%subplot(212); imshow(mat2gray(formatted));
