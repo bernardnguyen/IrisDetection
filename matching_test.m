@@ -25,6 +25,21 @@ disp([percentage_match1 percentage_match2 percentage_match3 percentage_match4 ..
     percentage_match5 percentage_match6 percentage_match7 percentage_match8 ...
     percentage_match9]);
 
+percentage_match1 = corr2(barcode_eye1,barcode_eye2); % original to bernard1
+percentage_match2 = corr2(barcode_eye2,barcode_eye3); % bernard1 to bernard2
+percentage_match3 = corr2(barcode_eye3,barcode_eye4); % bernard2 to bernard3
+percentage_match4 = corr2(barcode_eye3,barcode_eye5); % bernard2 to highguy1
+percentage_match5 = corr2(barcode_eye3,barcode_eye6); % bernard2 to highguy2
+percentage_match6 = corr2(barcode_eye5,barcode_eye6); % highguy1 to highguy2
+percentage_match7 = corr2(barcode_eye3,barcode_eye7); % bernard2 to otherguy1
+percentage_match8 = corr2(barcode_eye3,barcode_eye8); % bernard2 to otherguy2
+percentage_match9 = corr2(barcode_eye7,barcode_eye8); % otherguy1 to otherguy2
+
+disp([percentage_match1 percentage_match2 percentage_match3 percentage_match4 ...
+    percentage_match5 percentage_match6 percentage_match7 percentage_match8 ...
+    percentage_match9]);
+
+
 %{
 figure;
 subplot(3,3,1);
