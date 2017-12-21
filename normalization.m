@@ -16,7 +16,7 @@ height = yLeft + 2 * radius;
 dummy_image = imcrop(dummy_image, [yLeft, xTop, width, height]);
 
 % Normalize
-radial_res = 30; % M
+radial_res = 20; % M
 angular_res = 75; % N 
 
 rMax = 1;

@@ -21,6 +21,27 @@ correlation2 = corr2(b1,b2); % bernard1 to bernard2
 correlation3 = corr2(b1,b3); % bernard1 to bernard3
 correlation4 = corr2(b1,b4); % bernard1 to highguy
 
+if(percentage_match1 > 70 || correlation1 > 0.4) 
+    match1 = 'Yes';
+else
+    match1 = 'No';
+end
+if(percentage_match2 > 70 || correlation2 > 0.4) 
+    match2 = 'Yes';
+else
+    match2 = 'No';
+end
+if(percentage_match3 > 70 || correlation3 > 0.4) 
+    match3 = 'Yes';
+else
+    match3 = 'No';
+end
+if(percentage_match4 > 70 || correlation4 > 0.4) 
+    match4 = 'Yes';
+else
+    match4 = 'No';
+end
+
 
 % Graphic output
 bernard1 = imread('bernard_cropped.jpg');
@@ -65,22 +86,30 @@ subplot(4,6,23); imshow(mat2gray(formatBarcode(b4)));
 % Text output
 ax1 = subplot(4, 6, 6);
 text(0,1,{'Match % by Hamming Distance: ', percentage_match1}); 
-text(0,0.5,{'Correlation: ', correlation1});
+text(0,0.75,{'Correlation: ', correlation1});
+text(0,0.5,{'Match? ', match1});
+text(0,0.25,'Expected result: Match (same image)');
 set (ax1, 'visible', 'off')
 
 ax2 = subplot(4, 6, 12);
 text(0,1,{'Match % by Hamming Distance: ', percentage_match2}); 
-text(0,0.5,{'Correlation: ', correlation2});
+text(0,0.75,{'Correlation: ', correlation2});
+text(0,0.5,{'Match? ', match2});
+text(0,0.25,'Expected result: Match');
 set (ax2, 'visible', 'off')
 
 ax3 = subplot(4, 6, 18);
 text(0,1,{'Match % by Hamming Distance: ', percentage_match3}); 
-text(0,0.5,{'Correlation: ', correlation3});
+text(0,0.75,{'Correlation: ', correlation3});
+text(0,0.5,{'Match? ', match3});
+text(0,0.25,'Expected result: Match');
 set (ax3, 'visible', 'off')
 
 ax4 = subplot(4, 6, 24);
 text(0,1,{'Match % by Hamming Distance: ', percentage_match4}); 
-text(0,0.5,{'Correlation: ', correlation4});
+text(0,0.75,{'Correlation: ', correlation4});
+text(0,0.5,{'Match? ', match4});
+text(0,0.25,'Expected result: Mismatch');
 set (ax4, 'visible', 'off')
 
 
